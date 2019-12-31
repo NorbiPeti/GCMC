@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCMC", "GCMC\GCMC.csproj", "{734116A4-263B-4C65-B944-16F0864B9752}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCMCTest", "GCMCTest\GCMCTest.csproj", "{EA70F99D-AC56-4698-A2FE-B5677C1DAB0F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{734116A4-263B-4C65-B944-16F0864B9752}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{734116A4-263B-4C65-B944-16F0864B9752}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{734116A4-263B-4C65-B944-16F0864B9752}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{734116A4-263B-4C65-B944-16F0864B9752}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA70F99D-AC56-4698-A2FE-B5677C1DAB0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA70F99D-AC56-4698-A2FE-B5677C1DAB0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA70F99D-AC56-4698-A2FE-B5677C1DAB0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA70F99D-AC56-4698-A2FE-B5677C1DAB0F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
