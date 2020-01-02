@@ -23,6 +23,7 @@ namespace GCMC
         public void Ready()
         {
             RuntimeCommands.Register<string>("importWorld", ImportWorld, "Imports a Minecraft world.");
+            RuntimeCommands.Register<string>("placeCube", PlaceBlock, "Places a cube.");
         }
 
         public IEntitiesDB entitiesDB { get; set; }
@@ -30,14 +31,51 @@ namespace GCMC
 
         private void ImportWorld(string name)
         {
-            PlaceBlock(1, 1, 0);
+            PlaceBlock(0, BlockColors.Default, 0, new float3(0, 0, 0), 5, 1, 1, 1, 0);
         }
 
-        private void PlaceBlock(ushort block, byte color, uint playerId)
+        private void PlaceBlock(string args)
         {
             try
             {
-                BuildBlock(block, color).Init(new BlockPlacementInfoStruct()
+                var s = args.Split(' ');
+                ushort block = ushort.Parse(s[0]);
+                byte color = byte.Parse(s[1]);
+                byte darkness = byte.Parse(s[2]);
+                float x = float.Parse(s[3]), y = float.Parse(s[4]), z = float.Parse(s[5]);
+                int scale = int.Parse(s[6]);
+                float scaleX = float.Parse(s[7]);
+                float scaleY = float.Parse(s[8]);
+                float scaleZ = float.Parse(s[9]);
+                uint playerId = 0;
+                PlaceBlock(block, (BlockColors) color, darkness, new float3(x, y, z), scale, scaleX, scaleY, scaleZ, playerId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Log.Error(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Places a block at the given position
+        /// </summary>
+        /// <param name="block">The block's type</param>
+        /// <param name="color">The block's color</param>
+        /// <param name="darkness">The block color's darkness - 0 is default color</param>
+        /// <param name="position">The block's position - default block size is 0.2</param>
+        /// <param name="scale">The block's uniform scale - default scale is 1 (with 0.2 width)</param>
+        /// <param name="scaleX">The block's non-uniform scale - less than 1 means <paramref name="scale"/> is used</param>
+        /// <param name="scaleY">The block's non-uniform scale - less than 1 means <paramref name="scale"/> is used</param>
+        /// <param name="scaleZ">The block's non-uniform scale - less than 1 means <paramref name="scale"/> is used</param>
+        /// <param name="playerId">The player who placed the block</param>
+        /// <exception cref="Exception"></exception>
+        private void PlaceBlock(ushort block, BlockColors color, byte darkness, float3 position, int scale, float scaleX, float scaleY, float scaleZ, uint playerId)
+        {
+            try
+            {
+                if (darkness > 9) throw new Exception("That is too dark. Make sure to use 0-9 as darkness. (0 is default.)");
+                BuildBlock(block, (byte)color, position, scale, scaleX, scaleY, scaleZ).Init(new BlockPlacementInfoStruct()
                 {
                     loadedFromDisk = false,
                     placedBy = playerId
@@ -50,12 +88,17 @@ namespace GCMC
             }
         }
 
-        private EntityStructInitializer BuildBlock(ushort block, byte color)
+        private EntityStructInitializer BuildBlock(ushort block, byte color, float3 position, int scale, float scaleX, float scaleY, float scaleZ)
         {
             if (_blockEntityFactory == null)
                 throw new Exception("The factory is null.");
+            if (scale == 0)
+                throw new Exception("Scale needs to be at least 1");
+            if (Math.Abs(scaleX) < 1) scaleX = scale;
+            if (Math.Abs(scaleY) < 1) scaleY = scale;
+            if (Math.Abs(scaleZ) < 1) scaleZ = scale;
             //RobocraftX.CR.MachineEditing.PlaceBlockEngine
-            ScalingEntityStruct scaling = new ScalingEntityStruct {scale = new float3(1, 1, 1)};
+            ScalingEntityStruct scaling = new ScalingEntityStruct {scale = new float3(scaleX, scaleY, scaleZ)};
             RotationEntityStruct rotation = new RotationEntityStruct {rotation = quaternion.identity};
             GridRotationStruct gridRotation = new GridRotationStruct
                 {position = float3.zero, rotation = quaternion.identity};
@@ -67,7 +110,7 @@ namespace GCMC
             GFXPrefabEntityStructGO gfx = new GFXPrefabEntityStructGO {prefabID = num};
             BlockPlacementScaleEntityStruct placementScale = new BlockPlacementScaleEntityStruct
             {
-                blockPlacementHeight = 1, blockPlacementWidth = 1, desiredScaleFactor = 1, snapGridScale = 1,
+                blockPlacementHeight = scale, blockPlacementWidth = scale, desiredScaleFactor = scale, snapGridScale = scale,
                 unitSnapOffset = 0, isUsingUnitSize = true
             };
             EquippedColourStruct colour = new EquippedColourStruct {indexInPalette = color};
@@ -93,7 +136,7 @@ namespace GCMC
             structInitializer.Init(new GFXPrefabEntityStructGPUI(gfx.prefabID));
             structInitializer.Init(new PhysicsPrefabEntityStruct(gfx.prefabID));
             structInitializer.Init(dbEntity);
-            structInitializer.Init(new PositionEntityStruct {position = 0});
+            structInitializer.Init(new PositionEntityStruct {position = position});
             structInitializer.Init(rotation);
             structInitializer.Init(scaling);
             structInitializer.Init(gridRotation);
@@ -110,5 +153,20 @@ namespace GCMC
         }
 
         public string name { get; } = "Cube placer engine";
+
+        enum BlockColors
+        {
+            Default = byte.MaxValue,
+            White = 0,
+            Pink,
+            Purple,
+            Blue,
+            Aqua,
+            Green,
+            Lime,
+            Yellow,
+            Orange,
+            Red
+        }
     }
 }
