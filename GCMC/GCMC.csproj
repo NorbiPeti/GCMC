@@ -8,4 +8,58 @@
       <PackageReference Include="fNbt" Version="0.6.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, PublicKeyToken=null">
+        <HintPath>bin\Debug\netstandard2.0\0Harmony.dll</HintPath>
+      </Reference>
+      <Reference Include="BlockEntityFactory, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\BlockEntityFactory.dll</HintPath>
+      </Reference>
+      <Reference Include="CommandLine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\CommandLine.dll</HintPath>
+      </Reference>
+      <Reference Include="DataLoader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\DataLoader.dll</HintPath>
+      </Reference>
+      <Reference Include="IllusionPlugin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>IllusionPlugin.dll</HintPath>
+      </Reference>
+      <Reference Include="RobocraftX.Blocks, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\RobocraftX.Blocks.dll</HintPath>
+      </Reference>
+      <Reference Include="RobocraftX.Character, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\RobocraftX.Character.dll</HintPath>
+      </Reference>
+      <Reference Include="RobocraftX.Common, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\RobocraftX.Common.dll</HintPath>
+      </Reference>
+      <Reference Include="RobocraftX.Input, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\RobocraftX.Input.dll</HintPath>
+      </Reference>
+      <Reference Include="RobocraftX.MachineEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\RobocraftX.MachineEditor.dll</HintPath>
+      </Reference>
+      <Reference Include="RobocraftX.StateSync, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\RobocraftX.StateSync.dll</HintPath>
+      </Reference>
+      <Reference Include="Svelto.Common, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\Svelto.Common.dll</HintPath>
+      </Reference>
+      <Reference Include="Svelto.ECS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\Svelto.ECS.dll</HintPath>
+      </Reference>
+      <Reference Include="Unity.Entities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\Unity.Entities.dll</HintPath>
+      </Reference>
+      <Reference Include="Unity.Mathematics, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\Unity.Mathematics.dll</HintPath>
+      </Reference>
+      <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\UnityEngine.CoreModule.dll</HintPath>
+      </Reference>
+      <Reference Include="uREPL, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ref\uREPL.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
