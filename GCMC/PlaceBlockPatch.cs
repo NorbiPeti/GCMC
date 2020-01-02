@@ -1,6 +1,7 @@
 using System.Reflection;
 using DataLoader;
 using Harmony;
+using JetBrains.Annotations;
 using RobocraftX.Blocks.GUI;
 using RobocraftX.Common;
 using RobocraftX.CR.MachineEditing;
@@ -12,6 +13,7 @@ using UnityEngine;
 namespace GCMC
 {
     [HarmonyPatch]
+    [UsedImplicitly]
     public class PlaceBlockPatch
     {
         static void Postfix(EnginesRoot enginesRoot, ref StateSyncRegistrationHelper stateSyncReg, bool isAuthoritative)

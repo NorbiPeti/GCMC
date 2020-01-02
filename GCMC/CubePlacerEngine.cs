@@ -26,7 +26,7 @@ namespace GCMC
         }
 
         public IEntitiesDB entitiesDB { get; set; }
-        private readonly BlockEntityFactory _blockEntityFactory; //Injected from PlaceBlockEngine - TODO
+        internal static BlockEntityFactory _blockEntityFactory; //Injected from PlaceBlockEngine
 
         private void ImportWorld(string name)
         {
@@ -35,15 +35,25 @@ namespace GCMC
 
         private void PlaceBlock(ushort block, byte color, uint playerId)
         {
-            BuildBlock(block, color).Init(new BlockPlacementInfoStruct()
+            try
             {
-                loadedFromDisk = false,
-                placedBy = playerId
-            });
+                BuildBlock(block, color).Init(new BlockPlacementInfoStruct()
+                {
+                    loadedFromDisk = false,
+                    placedBy = playerId
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Log.Error(e.Message);
+            }
         }
 
         private EntityStructInitializer BuildBlock(ushort block, byte color)
         {
+            if (_blockEntityFactory == null)
+                throw new Exception("The factory is null.");
             //RobocraftX.CR.MachineEditing.PlaceBlockEngine
             ScalingEntityStruct scaling = new ScalingEntityStruct {scale = new float3(1, 1, 1)};
             RotationEntityStruct rotation = new RotationEntityStruct {rotation = quaternion.identity};
@@ -99,6 +109,6 @@ namespace GCMC
             return new JobHandle();
         }
 
-        public string name { get; }
+        public string name { get; } = "Cube placer engine";
     }
 }
