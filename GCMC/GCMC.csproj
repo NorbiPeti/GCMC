@@ -21,6 +21,9 @@
       <Reference Include="DataLoader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\ref\DataLoader.dll</HintPath>
       </Reference>
+      <Reference Include="GamecraftModdingAPI, Version=0.1.1.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\GamecraftModdingAPI\GamecraftModdingAPI\bin\Debug\net48\GamecraftModdingAPI.dll</HintPath>
+      </Reference>
       <Reference Include="IllusionPlugin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>IllusionPlugin.dll</HintPath>
       </Reference>

@@ -1,0 +1,6 @@
+name: GCMCPlugin
+main: io.github.norbipeti.gcmc.PluginMain
+version: '1.0'
+commands:
+  export:
+    description: Exports an area of the world
