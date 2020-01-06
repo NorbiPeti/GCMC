@@ -1,7 +1,7 @@
 package io.github.norbipeti.gcmc;
 
 import com.google.common.io.Files;
-import com.google.gson.Gson;
+import com.google.gson.*;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -30,7 +31,7 @@ public class PluginMain extends JavaPlugin {
 			sender.sendMessage("§cUsage: /export <x1> <y1> <z1> <x2> <y2> <z2>");
 			return true;
 		}
-		int[] xyz = new int[6];
+		final int[] xyz = new int[6];
 		for (int i = 0; i < args.length; i++)
 			xyz[i] = Integer.parseInt(args[i]);
 		for (int i = 0; i < 3; i++) {
@@ -42,16 +43,18 @@ public class PluginMain extends JavaPlugin {
 		}
 		World world = sender instanceof Player ? ((Player) sender).getWorld() : Bukkit.getWorlds().get(0);
 		val list = new ArrayList<Blocks>();
-		for (int y = xyz[1]; y < xyz[4]; y++) {
-			Blocks blocks = new Blocks(null, null, null);
-			for (int x = xyz[0]; x < xyz[3]; x++) {
-				for (int z = xyz[2]; z < xyz[5]; z++) {
+		for (int y = xyz[1]; y <= xyz[4]; y++) {
+			Blocks blocks = new Blocks();
+			for (int x = xyz[0]; x <= xyz[3]; x++) {
+				for (int z = xyz[2]; z <= xyz[5]; z++) {
 					Block block = world.getBlockAt(x, y, z);
 					Material mat = block.getType();
-					if (blocks.getMaterial() != mat) {
-						if (blocks.getStart() != null)
+					if (!mat.name().equals(blocks.getMaterial())) {
+						if (blocks.getStart() != null) {
 							list.add(blocks);
-						blocks.setMaterial(mat);
+							blocks = new Blocks();
+						}
+						blocks.setMaterial(mat.name());
 						blocks.setStart(new Location(null, x, y, z));
 						blocks.setEnd(blocks.getStart());
 					} else
@@ -60,7 +63,16 @@ public class PluginMain extends JavaPlugin {
 			}
 			list.add(blocks);
 		}
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().registerTypeAdapter(Location.class, new JsonSerializer<Location>() {
+			@Override
+			public JsonElement serialize(Location src, Type typeOfSrc, JsonSerializationContext context) {
+				val jo = new JsonObject();
+				jo.addProperty("x", src.getBlockX() - xyz[0]);
+				jo.addProperty("y", src.getBlockY() - xyz[1]);
+				jo.addProperty("z", src.getBlockZ() - xyz[2]);
+				return jo;
+			}
+		}).create();
 		try {
 			Files.write(gson.toJson(list), new File("result.txt"), StandardCharsets.UTF_8);
 			sender.sendMessage("§bSuccess!");
