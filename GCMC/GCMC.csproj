@@ -27,6 +27,9 @@
       <Reference Include="IllusionPlugin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>IllusionPlugin.dll</HintPath>
       </Reference>
+      <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\GamecraftModdingAPI\GamecraftModdingAPI\bin\Debug\net48\Newtonsoft.Json.dll</HintPath>
+      </Reference>
       <Reference Include="RobocraftX.Blocks, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\ref\RobocraftX.Blocks.dll</HintPath>
       </Reference>

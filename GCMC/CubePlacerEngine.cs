@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using DataLoader;
 using GamecraftModdingAPI.Blocks;
+using Newtonsoft.Json;
 using RobocraftX.Blocks;
 using RobocraftX.Blocks.Ghost;
 using RobocraftX.Blocks.Scaling;
@@ -31,6 +33,60 @@ namespace GCMC
 
         private void ImportWorld(string name)
         {
+            try
+            {
+                Log.Output("Starting...");
+                var blocksArray = JsonSerializer.Create()
+                    .Deserialize<Blocks[]>(new JsonTextReader(File.OpenText(name)));
+                int C = 0;
+                foreach (var blocks in blocksArray)
+                {
+                    BlockIDs id;
+                    BlockColors color;
+                    byte darkness = 0;
+                    switch (blocks.Material)
+                    {
+                        case "DIRT":
+                            id = BlockIDs.DirtCube;
+                            color = BlockColors.Default;
+                            break;
+                        case "GRASS":
+                            id = BlockIDs.GrassCube;
+                            color = BlockColors.Default;
+                            break;
+                        case "STONE":
+                            id = BlockIDs.ConcreteCube;
+                            color = BlockColors.White;
+                            darkness = 5;
+                            break;
+                        case "LEAVES":
+                            id = BlockIDs.AluminiumCube;
+                            color = BlockColors.Green;
+                            darkness = 5;
+                            break;
+                        case "AIR":
+                            continue;
+                        case "LOG":
+                            id = BlockIDs.WoodCube;
+                            color = BlockColors.Default;
+                            break;
+                        default:
+                            Log.Output("Unknown block: " + blocks.Material);
+                            continue;
+                    }
+
+                    Placement.PlaceBlock(id, (blocks.Start + blocks.End) / 2, color: color, darkness: darkness,
+                        scale: (blocks.End - blocks.Start + 1) * 5, rotation: quaternion.identity);
+                    C++;
+                }
+
+                Log.Output(C + " blocks placed.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Log.Error(e.Message);
+            }
         }
 
         private void PlaceBlock(string args)
