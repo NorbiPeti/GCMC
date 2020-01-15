@@ -76,7 +76,7 @@ namespace GCMC
                     }
 
                     Placement.PlaceBlock(id, (blocks.Start + blocks.End) / 2, color: color, darkness: darkness,
-                        scale: (blocks.End - blocks.Start + 1) * 5, rotation: quaternion.identity);
+                        scale: (blocks.End - blocks.Start + 1) * 5, rotation: float3.zero);
                     C++;
                 }
 
@@ -103,8 +103,10 @@ namespace GCMC
                 float scaleY = float.Parse(s[8]);
                 float scaleZ = float.Parse(s[9]);
                 float rotX = float.Parse(s[10]);
+                float rotY = float.Parse(s[11]);
+                float rotZ = float.Parse(s[12]);
                 uint playerId = 0;
-                Placement.PlaceBlock((BlockIDs) block, new float3(x, y, z), new quaternion(rotX, 0, 0, 1),
+                Placement.PlaceBlock((BlockIDs) block, new float3(x, y, z), new float3(rotX, rotY, rotZ),
                     (BlockColors) color, darkness, scale, new float3(scaleX, scaleY, scaleZ), playerId);
             }
             catch (Exception e)
