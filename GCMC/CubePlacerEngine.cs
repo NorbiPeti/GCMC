@@ -27,6 +27,24 @@ namespace GCMC
         {
             RuntimeCommands.Register<string>("importWorld", ImportWorld, "Imports a Minecraft world.");
             RuntimeCommands.Register<string>("placeCube", PlaceBlock, "Places a cube.");
+            RuntimeCommands.Register("placedBy", GetPlacedBy, "Gets who placed a block.");
+        }
+
+        private void GetPlacedBy()
+        {
+            try
+            {
+                var placementInfo =
+                    entitiesDB.QueryEntity<BlockPlacementInfoStruct>(new EGID(BlockIdentifiers.LatestBlockID,
+                        BlockIdentifiers.OWNED_BLOCKS));
+                Log.Output("Placed by: " + placementInfo.placedBy);
+                Log.Output("Loaded from disk: " + placementInfo.loadedFromDisk);
+            }
+            catch (Exception e)
+            {
+                Log.Error("Failed to get who placed the block.");
+                Console.WriteLine("Error getting who placed the block:\n" + e);
+            }
         }
 
         public IEntitiesDB entitiesDB { get; set; }
@@ -55,6 +73,8 @@ namespace GCMC
                             color = BlockColors.Default;
                             break;
                         case "STONE":
+                        case "COAL_ORE":
+                        case "IRON_ORE":
                             id = BlockIDs.ConcreteCube;
                             color = BlockColors.White;
                             darkness = 5;
@@ -70,13 +90,21 @@ namespace GCMC
                             id = BlockIDs.WoodCube;
                             color = BlockColors.Default;
                             break;
+                        case "WATER":
+                            id = BlockIDs.AluminiumCube;
+                            color = BlockColors.Blue;
+                            break;
+                        case "SAND":
+                            id = BlockIDs.AluminiumCube;
+                            color = BlockColors.Yellow;
+                            break;
                         default:
-                            Log.Output("Unknown block: " + blocks.Material);
+                            Console.WriteLine("Unknown block: " + blocks.Material);
                             continue;
                     }
 
-                    Placement.PlaceBlock(id, (blocks.Start + blocks.End) / 2, color: color, darkness: darkness,
-                        scale: (blocks.End - blocks.Start + 1) * 5, rotation: float3.zero);
+                    Placement.PlaceBlock(id, (blocks.Start + blocks.End) / 10 * 3, color: color, darkness: darkness,
+                        scale: (blocks.End - blocks.Start + 1) * 3, rotation: float3.zero);
                     C++;
                 }
 
@@ -116,7 +144,8 @@ namespace GCMC
             }
         }
 
-        public JobHandle SimulatePhysicsStep(in float deltaTime, in PhysicsUtility utility, in PlayerInput[] playerInputs)
+        public JobHandle SimulatePhysicsStep(in float deltaTime, in PhysicsUtility utility,
+            in PlayerInput[] playerInputs)
         {
             return new JobHandle();
         }

@@ -16,7 +16,7 @@ namespace GCMCTest
                 return true;
             });
             Console.WriteLine(nbtFile);*/
-            using (var rf = new RegionFile("r.-1.-1.mca"))
+            /*using (var rf = new RegionFile("r.-1.-1.mca"))
             {
                 Console.WriteLine(rf);
                 Console.WriteLine(rf.HasChunk(1, 2));
@@ -28,7 +28,7 @@ namespace GCMCTest
                     Console.WriteLine(nbt);
                     Console.WriteLine(nbt.RootTag);
                 }
-            }
+            }*/
         }
     }
 }

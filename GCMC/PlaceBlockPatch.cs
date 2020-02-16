@@ -38,7 +38,6 @@ namespace GCMC
             World physicsWorld,
             ref StateSyncRegistrationHelper stateSyncReg,
             bool isAuthoritative,
-            LabelResourceManager labelResourceManager,
             LabelResourceManager textBlockLabelResourceManager,
             MainGameOptions.Options mainGameOptions);
         private static MethodInfo _ComposeMethodInfo(ComposeAction a)
