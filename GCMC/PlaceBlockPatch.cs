@@ -29,20 +29,8 @@ namespace GCMC
 
         static MethodBase TargetMethod(HarmonyInstance instance)
         {
-            return _ComposeMethodInfo(MachineEditingCompositionRoot.StateSyncCompose);
-        }
-
-        private delegate void ComposeAction(EnginesRoot enginesRoot,
-            IDataDB dataDB,
-            RCXMode currentMode,
-            World physicsWorld,
-            ref StateSyncRegistrationHelper stateSyncReg,
-            bool isAuthoritative,
-            LabelResourceManager textBlockLabelResourceManager,
-            MainGameOptions.Options mainGameOptions);
-        private static MethodInfo _ComposeMethodInfo(ComposeAction a)
-        {
-            return a.Method;
+            return typeof(MachineEditingCompositionRoot).GetMethod("StateSyncCompose",
+                BindingFlags.Public | BindingFlags.Static);
         }
     }
 }

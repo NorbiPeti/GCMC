@@ -47,7 +47,7 @@ namespace GCMC
             }
         }
 
-        public IEntitiesDB entitiesDB { get; set; }
+        public EntitiesDB entitiesDB { get; set; }
 
         private void ImportWorld(string name)
         {
