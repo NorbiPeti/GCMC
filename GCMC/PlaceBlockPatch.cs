@@ -2,7 +2,6 @@ using System.Reflection;
 using DataLoader;
 using Harmony;
 using JetBrains.Annotations;
-using RobocraftX.Blocks.GUI;
 using RobocraftX.Common;
 using RobocraftX.CR.MachineEditing;
 using RobocraftX.StateSync;
@@ -20,7 +19,7 @@ namespace GCMC
         {
             if (isAuthoritative)
             {
-                stateSyncReg.AddEngine(new CubePlacerEngine());
+                stateSyncReg.AddDeterministicEngine(new CubePlacerEngine());
                 Debug.Log($"Added Minecraft world import engine");
             }
             else
@@ -29,7 +28,7 @@ namespace GCMC
 
         static MethodBase TargetMethod(HarmonyInstance instance)
         {
-            return typeof(MachineEditingCompositionRoot).GetMethod("StateSyncCompose",
+            return typeof(MainEditingCompositionRoot).GetMethod("Compose",
                 BindingFlags.Public | BindingFlags.Static);
         }
     }

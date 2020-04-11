@@ -85,6 +85,7 @@ namespace GCMC
                             darkness = 5;
                             break;
                         case "AIR":
+                        case "DOUBLE_PLANT":
                             continue;
                         case "LOG":
                             id = BlockIDs.WoodCube;
@@ -97,6 +98,24 @@ namespace GCMC
                         case "SAND":
                             id = BlockIDs.AluminiumCube;
                             color = BlockColors.Yellow;
+                            break;
+                        case "LONG_GRASS":
+                            id = BlockIDs.Flower1;
+                            color = BlockColors.Default;
+                            break;
+                        case "YELLOW_FLOWER":
+                            id = BlockIDs.Flower2;
+                            color = BlockColors.Default;
+                            break;
+                        case "GRAVEL":
+                            id = BlockIDs.ConcreteCube;
+                            color = BlockColors.White;
+                            darkness = 7;
+                            break;
+                        case "CLAY":
+                            id = BlockIDs.ConcreteCube;
+                            color = BlockColors.White;
+                            darkness = 4;
                             break;
                         default:
                             Console.WriteLine("Unknown block: " + blocks.Material);
