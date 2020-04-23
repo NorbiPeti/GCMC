@@ -5,7 +5,6 @@ import com.google.gson.*;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -44,24 +43,16 @@ public class PluginMain extends JavaPlugin {
 		World world = sender instanceof Player ? ((Player) sender).getWorld() : Bukkit.getWorlds().get(0);
 		val list = new ArrayList<Blocks>();
 		for (int y = xyz[1]; y <= xyz[4]; y++) {
-			Blocks blocks = new Blocks();
 			for (int x = xyz[0]; x <= xyz[3]; x++) {
 				for (int z = xyz[2]; z <= xyz[5]; z++) {
+					Blocks blocks = new Blocks();
+					blocks.setStart(new Location(null, x, y, z));
+					blocks.setEnd(blocks.getStart());
 					Block block = world.getBlockAt(x, y, z);
-					Material mat = block.getType();
-					if (!mat.name().equals(blocks.getMaterial())) {
-						if (blocks.getStart() != null) {
-							list.add(blocks);
-							blocks = new Blocks();
-						}
-						blocks.setMaterial(mat.name());
-						blocks.setStart(new Location(null, x, y, z));
-						blocks.setEnd(blocks.getStart());
-					} else
-						blocks.setEnd(new Location(null, x, y, z));
+					blocks.setMaterial(block.getType().name());
+					list.add(blocks);
 				}
 			}
-			list.add(blocks);
 		}
 		Gson gson = new GsonBuilder().registerTypeAdapter(Location.class, new JsonSerializer<Location>() {
 			@Override

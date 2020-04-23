@@ -1,3 +1,9 @@
 bin/
 obj/
 /packages/
+.idea
+*.sln.DotSettings.user
+target/
+ref
+*.iml
+
