@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using IllusionPlugin;
 using UnityEngine;
 
@@ -9,14 +9,14 @@ namespace GCMC
     {
         public string Name { get; } = "GCMC";
         public string Version { get; } = "v0.0.1";
-        public static HarmonyInstance harmony { get; protected set; }
+        public static Harmony harmony { get; protected set; }
         public const string HarmonyID = "io.github.norbipeti.GCMC";
         
         public void OnApplicationStart()
         {
             if (harmony == null)
             {
-                harmony = HarmonyInstance.Create(HarmonyID);
+                harmony = new Harmony(HarmonyID);
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
             }
 

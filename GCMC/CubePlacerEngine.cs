@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using DataLoader;
+using GamecraftModdingAPI;
 using GamecraftModdingAPI.Blocks;
 using Newtonsoft.Json;
 using RobocraftX.Blocks;
@@ -21,30 +22,11 @@ using uREPL;
 
 namespace GCMC
 {
-    public class CubePlacerEngine : IQueryingEntitiesEngine, IDeterministicSim
+    public class CubePlacerEngine : IQueryingEntitiesEngine, IDeterministicTimeStopped
     {
         public void Ready()
         {
             RuntimeCommands.Register<string>("importWorld", ImportWorld, "Imports a Minecraft world.");
-            RuntimeCommands.Register<string>("placeCube", PlaceBlock, "Places a cube.");
-            RuntimeCommands.Register("placedBy", GetPlacedBy, "Gets who placed a block.");
-        }
-
-        private void GetPlacedBy()
-        {
-            try
-            {
-                var placementInfo =
-                    entitiesDB.QueryEntity<BlockPlacementInfoStruct>(new EGID(BlockIdentifiers.LatestBlockID,
-                        BlockIdentifiers.OWNED_BLOCKS));
-                Log.Output("Placed by: " + placementInfo.placedBy);
-                Log.Output("Loaded from disk: " + placementInfo.loadedFromDisk);
-            }
-            catch (Exception e)
-            {
-                Log.Error("Failed to get who placed the block.");
-                Console.WriteLine("Error getting who placed the block:\n" + e);
-            }
         }
 
         public EntitiesDB entitiesDB { get; set; }
@@ -122,7 +104,7 @@ namespace GCMC
                             continue;
                     }
 
-                    Placement.PlaceBlock(id, (blocks.Start + blocks.End) / 10 * 3, color: color, darkness: darkness,
+                    Block.PlaceNew(id, (blocks.Start + blocks.End) / 10 * 3, color: color, darkness: darkness,
                         scale: (blocks.End - blocks.Start + 1) * 3, rotation: float3.zero);
                     C++;
                 }
@@ -136,35 +118,7 @@ namespace GCMC
             }
         }
 
-        private void PlaceBlock(string args)
-        {
-            try
-            {
-                var s = args.Split(' ');
-                ushort block = ushort.Parse(s[0]);
-                byte color = byte.Parse(s[1]);
-                byte darkness = byte.Parse(s[2]);
-                float x = float.Parse(s[3]), y = float.Parse(s[4]), z = float.Parse(s[5]);
-                int scale = int.Parse(s[6]);
-                float scaleX = float.Parse(s[7]);
-                float scaleY = float.Parse(s[8]);
-                float scaleZ = float.Parse(s[9]);
-                float rotX = float.Parse(s[10]);
-                float rotY = float.Parse(s[11]);
-                float rotZ = float.Parse(s[12]);
-                uint playerId = 0;
-                Placement.PlaceBlock((BlockIDs) block, new float3(x, y, z), new float3(rotX, rotY, rotZ),
-                    (BlockColors) color, darkness, scale, new float3(scaleX, scaleY, scaleZ), playerId);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                Log.Error(e.Message);
-            }
-        }
-
-        public JobHandle SimulatePhysicsStep(in float deltaTime, in PhysicsUtility utility,
-            in PlayerInput[] playerInputs)
+        public JobHandle SimulatePhysicsStep(in float deltaTime, in PhysicsUtility utility, in PlayerInput[] playerInputs)
         {
             return new JobHandle();
         }

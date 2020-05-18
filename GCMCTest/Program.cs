@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Channels;
-using fNbt;
 using GCMC;
 
 namespace GCMCTest

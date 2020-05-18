@@ -1,74 +1,81 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+<Project>
+  
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFramework>net472</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="fNbt" Version="0.6.4" />
+      <PackageReference Include="ILMerge" Version="3.0.29" />
+      <PackageReference Include="ini-parser" Version="2.5.2" />
+      <PackageReference Include="Lib.Harmony" Version="2.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, PublicKeyToken=null">
-        <HintPath>bin\Debug\netstandard2.0\0Harmony.dll</HintPath>
-      </Reference>
       <Reference Include="BlockEntityFactory, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\BlockEntityFactory.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\BlockEntityFactory.dll</HintPath>
       </Reference>
       <Reference Include="CommandLine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\CommandLine.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\CommandLine.dll</HintPath>
       </Reference>
       <Reference Include="DataLoader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\DataLoader.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\DataLoader.dll</HintPath>
       </Reference>
-      <Reference Include="GamecraftModdingAPI, Version=0.2.0.0, Culture=neutral, PublicKeyToken=null">
+      <Reference Include="GamecraftModdingAPI, Version=1.0.2.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GamecraftModdingAPI\GamecraftModdingAPI\bin\Debug\net472\GamecraftModdingAPI.dll</HintPath>
       </Reference>
       <Reference Include="IllusionPlugin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>IllusionPlugin.dll</HintPath>
+        <!-- <Private>False</Private> Need to copy for ILMerge -->
       </Reference>
       <Reference Include="Newtonsoft.Json, Version=12.0.1.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GamecraftModdingAPI\GamecraftModdingAPI\bin\Debug\net472\Newtonsoft.Json.dll</HintPath>
       </Reference>
       <Reference Include="RobocraftX.Blocks, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\RobocraftX.Blocks.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\RobocraftX.Blocks.dll</HintPath>
       </Reference>
       <Reference Include="RobocraftX.Character, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\RobocraftX.Character.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\RobocraftX.Character.dll</HintPath>
       </Reference>
       <Reference Include="RobocraftX.Common, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\RobocraftX.Common.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\RobocraftX.Common.dll</HintPath>
       </Reference>
       <Reference Include="RobocraftX.GUI, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\RobocraftX.GUI.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\RobocraftX.GUI.dll</HintPath>
       </Reference>
       <Reference Include="RobocraftX.Input, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\RobocraftX.Input.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\RobocraftX.Input.dll</HintPath>
       </Reference>
       <Reference Include="RobocraftX.MachineEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\RobocraftX.MachineEditor.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\RobocraftX.MachineEditor.dll</HintPath>
       </Reference>
       <Reference Include="RobocraftX.StateSync, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\RobocraftX.StateSync.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\RobocraftX.StateSync.dll</HintPath>
       </Reference>
-      <Reference Include="Svelto.Common, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\Svelto.Common.dll</HintPath>
+      <Reference Include="Svelto.Common_3, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>D:\Games\SteamLibrary\steamapps\common\RobocraftX\Gamecraft_Data\Managed\Svelto.Common_3.dll</HintPath>
       </Reference>
       <Reference Include="Svelto.ECS, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\Svelto.ECS.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\Svelto.ECS.dll</HintPath>
       </Reference>
       <Reference Include="Unity.Entities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\Unity.Entities.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\Unity.Entities.dll</HintPath>
       </Reference>
       <Reference Include="Unity.Mathematics, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\Unity.Mathematics.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\Unity.Mathematics.dll</HintPath>
       </Reference>
       <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\UnityEngine.CoreModule.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       </Reference>
       <Reference Include="uREPL, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\ref\uREPL.dll</HintPath>
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\uREPL.dll</HintPath>
       </Reference>
     </ItemGroup>
 
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <Target Name="AfterBuild">
+    <!-- the ILMergePath property points to the location of ILMerge.exe console application -->
+    <Exec Command="$(ILMergeConsolePath) /ndebug /out:bin\Debug\net472\GCMC.dll bin\$(Configuration)\net472\GCMC.dll bin\$(Configuration)\net472\INIFileParser.dll" />
+  </Target>
+  
 </Project>

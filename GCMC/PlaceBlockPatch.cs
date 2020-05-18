@@ -1,6 +1,6 @@
 using System.Reflection;
 using DataLoader;
-using Harmony;
+using HarmonyLib;
 using JetBrains.Annotations;
 using RobocraftX.Common;
 using RobocraftX.CR.MachineEditing;
@@ -26,7 +26,7 @@ namespace GCMC
                 Debug.Log("Not authoritative, not adding MC engine");
         }
 
-        static MethodBase TargetMethod(HarmonyInstance instance)
+        static MethodBase TargetMethod()
         {
             return typeof(MainEditingCompositionRoot).GetMethod("Compose",
                 BindingFlags.Public | BindingFlags.Static);
