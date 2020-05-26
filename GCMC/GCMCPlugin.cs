@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using GamecraftModdingAPI.Utility;
 using HarmonyLib;
 using IllusionPlugin;
 using UnityEngine;
@@ -14,11 +15,12 @@ namespace GCMC
         
         public void OnApplicationStart()
         {
-            if (harmony == null)
+            /*if (harmony == null)
             {
                 harmony = new Harmony(HarmonyID);
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
-            }
+            }*/
+            GameEngineManager.AddGameEngine(new CubePlacerEngine());
 
             Debug.Log("GCMC loaded");
         }

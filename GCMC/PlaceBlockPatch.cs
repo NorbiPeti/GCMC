@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace GCMC
 {
-    [HarmonyPatch]
+    /*[HarmonyPatch]
     [UsedImplicitly]
     public class PlaceBlockPatch
     {
@@ -31,5 +31,5 @@ namespace GCMC
             return typeof(MainEditingCompositionRoot).GetMethod("Compose",
                 BindingFlags.Public | BindingFlags.Static);
         }
-    }
+    }*/
 }

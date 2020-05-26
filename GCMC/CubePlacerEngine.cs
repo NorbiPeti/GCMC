@@ -4,45 +4,38 @@ using System.IO;
 using System.Threading.Tasks;
 using GamecraftModdingAPI;
 using GamecraftModdingAPI.Blocks;
-using HarmonyLib;
+using GamecraftModdingAPI.Engines;
+using GamecraftModdingAPI.Utility;
 using Newtonsoft.Json;
-using RobocraftX.Common.Input;
-using RobocraftX.Common.Utilities;
-using RobocraftX.StateSync;
+using RobocraftX.Common;
 using Svelto.ECS;
-using Unity.Jobs;
 using Unity.Mathematics;
 using uREPL;
 
 namespace GCMC
 {
-    public class CubePlacerEngine : IQueryingEntitiesEngine, IDeterministicTimeStopped
+    public class CubePlacerEngine : IApiEngine
     {
         public void Ready()
         {
             RuntimeCommands.Register<string>("importWorld", ImportWorld, "Imports a Minecraft world.");
+            _serializer.TraceWriter = _traceWriter;
         }
 
         public EntitiesDB entitiesDB { get; set; }
 
-        private Dictionary<string, BlockType> mapping = new Dictionary<string, BlockType>(10);
-        private Blocks[] blocksArray;
-        private int C;
-        private bool state;
-        private string filename;
+        private readonly Dictionary<string, BlockType> mapping = new Dictionary<string, BlockType>(10);
+        private JsonSerializer _serializer = JsonSerializer.Create();
+        private JsonTraceWriter _traceWriter = new JsonTraceWriter();
 
-        private void ImportWorld(string name)
+        private async void ImportWorld(string name)
         {
             try
             {
-                filename = name;
                 Log.Output("Reading block mappings...");
                 var parser = new IniParser.FileIniDataParser();
                 var ini = parser.ReadFile("BlockTypes.ini");
                 mapping.Clear();
-                C = 0;
-                blocksArray = null;
-                state = false;
                 foreach (var section in ini.Sections)
                 {
                     var mcblocks = section.SectionName.Split(',');
@@ -93,12 +86,54 @@ namespace GCMC
                     }
                 }
 
-                Log.Output("Starting...");
-                Task.Run(() =>
+                Log.Output("Reading file...");
+                Blocks[] blocksArray = null;
+                //Console.WriteLine("Outside thread: " + Thread.CurrentThread.ManagedThreadId);
+                //Console.WriteLine("Outside context: " + SynchronizationContext.Current);
+                await Task.Run(() =>
                 {
-                    blocksArray = JsonSerializer.Create()
-                        .Deserialize<Blocks[]>(new JsonTextReader(File.OpenText(filename)));
+                    //Console.WriteLine("Inside thread: " + Thread.CurrentThread.Name);
+                    var fs = File.OpenText(name);
+                    _traceWriter.FileLength = ((FileStream) fs.BaseStream).Length;
+                    blocksArray = _serializer.Deserialize<Blocks[]>(new JsonTextReader(fs));
                 });
+                //Console.WriteLine("After thread: " + Thread.CurrentThread.ManagedThreadId);
+                Log.Output("Placing blocks...");
+                int i;
+                uint start = BlockIdentifiers.LatestBlockID + 1;
+                uint end = start;
+                for (i = 0; i < blocksArray.Length; i++)
+                {
+                    //if (i % 5000 == 0) await AsyncUtils.WaitForSubmission();
+                    var blocks = blocksArray[i];
+                    if (!mapping.TryGetValue(blocks.Material, out var type))
+                    {
+                        Console.WriteLine("Unknown block: " + blocks.Material);
+                        continue;
+                    }
+
+                    if (type.Type == BlockIDs.Invalid) continue;
+
+                    end = Block.PlaceNew(type.Type, (blocks.Start + blocks.End) / 10 * 3, color: type.Color.Color,
+                        darkness: type.Color.Darkness, scale: (blocks.End - blocks.Start + 1) * 3,
+                        rotation: float3.zero).Id.entityID;
+                }
+
+                await AsyncUtils.WaitForSubmission();
+                var conns = entitiesDB.QueryEntities<GridConnectionsEntityStruct>(CommonExclusiveGroups
+                    .OWNED_BLOCKS_GROUP);
+                Log.Output("Start: " + start + " - End: " + end);
+                Log.Output("conn: " + conns[start].isIsolator + " " + conns[start].isProcessed + " " +
+                           conns[start].areConnectionsAssigned + " " + conns[start].ID + " " +
+                           conns[start].machineRigidBodyId);
+                for (uint j = start; j <= end; j++)
+                {
+                    conns[j].isProcessed = false;
+                    conns[j].areConnectionsAssigned = false;
+                    conns[j].isIsolator = false;
+                }
+
+                Log.Output(i + " blocks placed.");
             }
             catch (Exception e)
             {
@@ -107,35 +142,11 @@ namespace GCMC
             }
         }
 
-        public JobHandle SimulatePhysicsStep(in float deltaTime, in PhysicsUtility utility,
-            in PlayerInput[] playerInputs)
+        public void Dispose()
         {
-            state = !state;
-            if (blocksArray == null || C >= blocksArray.Length
-                                    || state) return default;
-            int i;
-            for (i = C; i < C + 10000 && i < blocksArray.Length; i++)
-            {
-                var blocks = blocksArray[i];
-                if (!mapping.TryGetValue(blocks.Material, out var type))
-                {
-                    Console.WriteLine("Unknown block: " + blocks.Material);
-                    continue;
-                }
-
-                if (type.Type == BlockIDs.Invalid) continue;
-
-                Block.PlaceNew(type.Type, (blocks.Start + blocks.End) / 10 * 3, color: type.Color.Color,
-                    darkness: type.Color.Darkness, scale: (blocks.End - blocks.Start + 1) * 3,
-                    rotation: float3.zero);
-            }
-
-            AccessTools.Method(typeof(Block), "Sync").Invoke(null, new object[0]);
-            C = i;
-            Log.Output(C + " blocks placed.");
-            return new JobHandle();
         }
 
-        public string name { get; } = "Cube placer engine";
+        public string Name { get; } = "GCMCCubePlacerEngine";
+        public bool isRemovable { get; } = false;
     }
 }
