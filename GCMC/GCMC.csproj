@@ -21,7 +21,7 @@
       <Reference Include="DataLoader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\ref\Gamecraft_Data\Managed\DataLoader.dll</HintPath>
       </Reference>
-      <Reference Include="GamecraftModdingAPI, Version=1.0.2.0, Culture=neutral, PublicKeyToken=null">
+      <Reference Include="GamecraftModdingAPI, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\GamecraftModdingAPI\GamecraftModdingAPI\bin\Debug\net472\GamecraftModdingAPI.dll</HintPath>
       </Reference>
       <Reference Include="IllusionPlugin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
@@ -70,6 +70,12 @@
       <Reference Include="uREPL, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\ref\Gamecraft_Data\Managed\uREPL.dll</HintPath>
       </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="BlockTypes.ini">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
