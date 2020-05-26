@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using GamecraftModdingAPI;
 using GamecraftModdingAPI.Blocks;
+using HarmonyLib;
 using Newtonsoft.Json;
 using RobocraftX.Common.Input;
 using RobocraftX.Common.Utilities;
@@ -23,24 +25,39 @@ namespace GCMC
 
         public EntitiesDB entitiesDB { get; set; }
 
+        private Dictionary<string, BlockType> mapping = new Dictionary<string, BlockType>(10);
+        private Blocks[] blocksArray;
+        private int C;
+        private bool state;
+        private string filename;
+
         private void ImportWorld(string name)
         {
             try
             {
+                filename = name;
                 Log.Output("Reading block mappings...");
                 var parser = new IniParser.FileIniDataParser();
                 var ini = parser.ReadFile("BlockTypes.ini");
-                var mapping = new Dictionary<string, BlockType>(10);
+                mapping.Clear();
+                C = 0;
+                blocksArray = null;
+                state = false;
                 foreach (var section in ini.Sections)
                 {
                     var mcblocks = section.SectionName.Split(',');
+                    BlockIDs type;
                     if (section.Keys["type"] == null)
                     {
                         if (section.Keys["ignore"] != "true")
+                        {
                             Log.Warn("Block type not specified for " + section.SectionName);
-                        continue;
+                            continue;
+                        }
+
+                        type = BlockIDs.Invalid;
                     }
-                    if (!Enum.TryParse(section.Keys["type"], out BlockIDs type))
+                    else if (!Enum.TryParse(section.Keys["type"], out type))
                     {
                         Log.Warn("Block type specified in ini not found: " + section.Keys["type"]);
                         continue;
@@ -75,25 +92,13 @@ namespace GCMC
                         });
                     }
                 }
+
                 Log.Output("Starting...");
-                var blocksArray = JsonSerializer.Create()
-                    .Deserialize<Blocks[]>(new JsonTextReader(File.OpenText(name)));
-                int C = 0;
-                foreach (var blocks in blocksArray)
+                Task.Run(() =>
                 {
-                    if (!mapping.TryGetValue(blocks.Material, out var type))
-                    {
-                        Console.WriteLine("Unknown block: " + blocks.Material);
-                        continue;
-                    }
-
-                    Block.PlaceNew(type.Type, (blocks.Start + blocks.End) / 10 * 3, color: type.Color.Color,
-                        darkness: type.Color.Darkness, scale: (blocks.End - blocks.Start + 1) * 3,
-                        rotation: float3.zero);
-                    C++;
-                }
-
-                Log.Output(C + " blocks placed.");
+                    blocksArray = JsonSerializer.Create()
+                        .Deserialize<Blocks[]>(new JsonTextReader(File.OpenText(filename)));
+                });
             }
             catch (Exception e)
             {
@@ -102,8 +107,32 @@ namespace GCMC
             }
         }
 
-        public JobHandle SimulatePhysicsStep(in float deltaTime, in PhysicsUtility utility, in PlayerInput[] playerInputs)
+        public JobHandle SimulatePhysicsStep(in float deltaTime, in PhysicsUtility utility,
+            in PlayerInput[] playerInputs)
         {
+            state = !state;
+            if (blocksArray == null || C >= blocksArray.Length
+                                    || state) return default;
+            int i;
+            for (i = C; i < C + 10000 && i < blocksArray.Length; i++)
+            {
+                var blocks = blocksArray[i];
+                if (!mapping.TryGetValue(blocks.Material, out var type))
+                {
+                    Console.WriteLine("Unknown block: " + blocks.Material);
+                    continue;
+                }
+
+                if (type.Type == BlockIDs.Invalid) continue;
+
+                Block.PlaceNew(type.Type, (blocks.Start + blocks.End) / 10 * 3, color: type.Color.Color,
+                    darkness: type.Color.Darkness, scale: (blocks.End - blocks.Start + 1) * 3,
+                    rotation: float3.zero);
+            }
+
+            AccessTools.Method(typeof(Block), "Sync").Invoke(null, new object[0]);
+            C = i;
+            Log.Output(C + " blocks placed.");
             return new JobHandle();
         }
 
