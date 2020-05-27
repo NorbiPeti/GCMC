@@ -88,23 +88,16 @@ namespace GCMC
 
                 Log.Output("Reading file...");
                 Blocks[] blocksArray = null;
-                //Console.WriteLine("Outside thread: " + Thread.CurrentThread.ManagedThreadId);
-                //Console.WriteLine("Outside context: " + SynchronizationContext.Current);
                 await Task.Run(() =>
                 {
-                    //Console.WriteLine("Inside thread: " + Thread.CurrentThread.Name);
                     var fs = File.OpenText(name);
                     _traceWriter.FileLength = ((FileStream) fs.BaseStream).Length;
                     blocksArray = _serializer.Deserialize<Blocks[]>(new JsonTextReader(fs));
                 });
-                //Console.WriteLine("After thread: " + Thread.CurrentThread.ManagedThreadId);
                 Log.Output("Placing blocks...");
                 int i;
-                uint start = BlockIdentifiers.LatestBlockID + 1;
-                uint end = start;
                 for (i = 0; i < blocksArray.Length; i++)
                 {
-                    //if (i % 5000 == 0) await AsyncUtils.WaitForSubmission();
                     var blocks = blocksArray[i];
                     if (!mapping.TryGetValue(blocks.Material, out var type))
                     {
@@ -114,23 +107,9 @@ namespace GCMC
 
                     if (type.Type == BlockIDs.Invalid) continue;
 
-                    end = Block.PlaceNew(type.Type, (blocks.Start + blocks.End) / 10 * 3, color: type.Color.Color,
+                    Block.PlaceNew(type.Type, (blocks.Start + blocks.End) / 10 * 3, color: type.Color.Color,
                         darkness: type.Color.Darkness, scale: (blocks.End - blocks.Start + 1) * 3,
-                        rotation: float3.zero).Id.entityID;
-                }
-
-                await AsyncUtils.WaitForSubmission();
-                var conns = entitiesDB.QueryEntities<GridConnectionsEntityStruct>(CommonExclusiveGroups
-                    .OWNED_BLOCKS_GROUP);
-                Log.Output("Start: " + start + " - End: " + end);
-                Log.Output("conn: " + conns[start].isIsolator + " " + conns[start].isProcessed + " " +
-                           conns[start].areConnectionsAssigned + " " + conns[start].ID + " " +
-                           conns[start].machineRigidBodyId);
-                for (uint j = start; j <= end; j++)
-                {
-                    conns[j].isProcessed = false;
-                    conns[j].areConnectionsAssigned = false;
-                    conns[j].isIsolator = false;
+                        rotation: float3.zero);
                 }
 
                 Log.Output(i + " blocks placed.");
