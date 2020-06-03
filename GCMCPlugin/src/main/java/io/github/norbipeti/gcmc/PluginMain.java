@@ -31,7 +31,7 @@ public class PluginMain extends JavaPlugin {
 			return true;
 		}
 		final int[] xyz = new int[6];
-		for (int i = 0; i < args.length; i++)
+		for (int i = 0; i < 6; i++)
 			xyz[i] = Integer.parseInt(args[i]);
 		for (int i = 0; i < 3; i++) {
 			if (xyz[i] >= xyz[i + 3]) {
@@ -45,10 +45,11 @@ public class PluginMain extends JavaPlugin {
 		for (int y = xyz[1]; y <= xyz[4]; y++) {
 			for (int x = xyz[0]; x <= xyz[3]; x++) {
 				for (int z = xyz[2]; z <= xyz[5]; z++) {
+					Block block = world.getBlockAt(x, y, z);
+					if(block.getType().name().equals("AIR")) continue;
 					Blocks blocks = new Blocks();
 					blocks.setStart(new Location(null, x, y, z));
 					blocks.setEnd(blocks.getStart());
-					Block block = world.getBlockAt(x, y, z);
 					blocks.setMaterial(block.getType().name());
 					list.add(blocks);
 				}
@@ -65,7 +66,7 @@ public class PluginMain extends JavaPlugin {
 			}
 		}).create();
 		try {
-			Files.write(gson.toJson(list), new File("result.txt"), StandardCharsets.UTF_8);
+			Files.write(gson.toJson(list), new File("result.json"), StandardCharsets.UTF_8);
 			sender.sendMessage("§bSuccess!");
 		} catch (IOException e) {
 			e.printStackTrace();
