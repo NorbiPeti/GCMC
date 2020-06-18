@@ -21,15 +21,15 @@
       <Reference Include="DataLoader, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\ref\Gamecraft_Data\Managed\DataLoader.dll</HintPath>
       </Reference>
-      <Reference Include="GamecraftModdingAPI, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null">
+      <Reference Include="GamecraftModdingAPI">
         <HintPath>..\..\GamecraftModdingAPI\GamecraftModdingAPI\bin\Debug\net472\GamecraftModdingAPI.dll</HintPath>
       </Reference>
       <Reference Include="IllusionPlugin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>IllusionPlugin.dll</HintPath>
         <!-- <Private>False</Private> Need to copy for ILMerge -->
       </Reference>
-      <Reference Include="Newtonsoft.Json, Version=12.0.1.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\GamecraftModdingAPI\GamecraftModdingAPI\bin\Debug\net472\Newtonsoft.Json.dll</HintPath>
+      <Reference Include="Newtonsoft.Json">
+        <HintPath>..\..\ref\Gamecraft_Data\Managed\Newtonsoft.Json.dll</HintPath>
       </Reference>
       <Reference Include="RobocraftX.Blocks, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\..\ref\Gamecraft_Data\Managed\RobocraftX.Blocks.dll</HintPath>
